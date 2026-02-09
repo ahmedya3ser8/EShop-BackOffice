@@ -1,0 +1,29 @@
+<div class="admin_sidebar w-62.5 bg-gray-50">
+  <ul>
+    <li>
+      <a routerLink="/dashboard" class="block p-4 text-gray-500 transition duration-300" routerLinkActive="text-gray-500 bg-gray-200"> Dashboard </a>
+    </li>
+    <li>
+      <a routerLink="/products" class="block p-4 text-gray-500 transition duration-300" routerLinkActive="text-gray-500 bg-gray-200"> Products </a>
+    </li>
+    <li>
+      <a routerLink="/users" class="block p-4 text-gray-500 transition duration-300" routerLinkActive="text-gray-500 bg-gray-200"> Users </a>
+    </li>
+    <li>
+      <a routerLink="/brands" class="block p-4 text-gray-500 transition duration-300" routerLinkActive="text-gray-500 bg-gray-200"> Brands </a>
+    </li>
+    <li>
+      <a routerLink="/categories" class="block p-4 text-gray-500 transition duration-300" routerLinkActive="text-gray-500 bg-gray-200"> Categories </a>
+    </li>
+    <li>
+      <a routerLink="/sub-categories" class="block p-4 text-gray-500 transition duration-300" routerLinkActive="text-gray-500 bg-gray-200"> SubCategories </a>
+    </li>
+    <li>
+      <a routerLink="/orders" class="block p-4 text-gray-500 transition duration-300" routerLinkActive="text-gray-500 bg-gray-200"> Orders </a>
+    </li>
+  </ul>
+</div>
+
+<main class="admin_content flex-1 bg-white p-6 min-h-screen">
+  <router-outlet />
+</main>
