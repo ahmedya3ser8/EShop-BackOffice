@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@layer components {
+  .container {
+    @apply mx-auto;
+  }
+}
+
 body {
   background-color: #f9f9f9;
   font-family: "Roboto", sans-serif;
