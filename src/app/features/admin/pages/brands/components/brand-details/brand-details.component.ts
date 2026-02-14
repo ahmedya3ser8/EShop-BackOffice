@@ -1,9 +1,11 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { BrandsService } from '../../services/brands.service';
-import { ToastrService } from 'ngx-toastr';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
 import { MainTitleComponent } from "@shared/components";
 import { IBrandData } from '../../models/ibrand';
+import { BrandsService } from '../../services/brands.service';
 
 @Component({
   selector: 'app-brand-details',
@@ -27,7 +29,6 @@ export class BrandDetailsComponent implements OnInit {
   getId(): void {
     this.activatedRoute.paramMap.subscribe({
       next: (param) => {
-        console.log(param);
         this.brandId = param.get('id')!;
         this.getBrand(this.brandId);
       }
@@ -35,11 +36,9 @@ export class BrandDetailsComponent implements OnInit {
   }
 
   getBrand(id: string): void {
-    console.log(id);
-    this.brandsService.getBrand(id).subscribe({
+    this.brandsService.getBrand(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
-        console.log(res);
-        if (res.data) {
+        if (res.status === 'success') {
           this.brandData = res.data;
         }
       },
@@ -49,5 +48,4 @@ export class BrandDetailsComponent implements OnInit {
       }
     })
   }
-
 }

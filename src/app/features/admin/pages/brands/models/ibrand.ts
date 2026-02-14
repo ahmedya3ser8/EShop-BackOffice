@@ -1,8 +1,10 @@
 export interface IBrandResponse {
+  status: string;
   data: IBrandData;
 }
 
 export interface IBrandsReponse {
+  status: string;
   results: number;
   paginationResult: {
     currentPage: number;

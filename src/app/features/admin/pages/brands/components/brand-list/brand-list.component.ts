@@ -1,5 +1,8 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { Router, RouterLink } from "@angular/router";
+import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 
 import { BrandsService } from '../../services/brands.service';
@@ -8,9 +11,6 @@ import { MainTitleComponent } from "@shared/components";
 
 import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from "@angular/router";
 
 interface IColumn {
   field: string;
@@ -53,7 +53,6 @@ export class BrandListComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (value) => {
-        console.log(value);
         this.keyword = value;
         this.currentPage = 1;
         this.getAllBrands();
@@ -71,8 +70,7 @@ export class BrandListComponent implements OnInit {
     }
     this.brandsService.getAllBrands(paginateObj).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
-        console.log(res);
-        if (res) {
+        if (res.status === 'success') {
           this.brands = res.data;
           this.currentPage = res.paginationResult.currentPage;
           this.totalRecords = res.paginationResult.totalRecords;
@@ -96,7 +94,6 @@ export class BrandListComponent implements OnInit {
   }
 
   onSort(event: any): void {
-    console.log(event);
     if (event.sortField === 'name') {
       this.sortField = event.sortOrder === 1 ? event.sortField : `-${event.sortField}`;
       this.getAllBrands();
@@ -104,16 +101,25 @@ export class BrandListComponent implements OnInit {
   }
 
   onView(id: string): void {
-    console.log(id);
     this.router.navigate(['/brands/view', id])
   }
 
   onEdit(id: string): void {
-    console.log(id);
     this.router.navigate(['/brands/edit', id])
   }
 
   onDelete(id: string): void {
-    console.log(id);
+    this.brandsService.deleteBrand(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: (res) => {
+        if (res.status === 'success') {
+          this.toastr.success('brand deleted successfully');
+          this.getAllBrands();
+        }
+      },
+      error: (err) => {
+        console.log(err);
+        this.toastr.error(err.error.message || 'Failed to delete brand');
+      }
+    })
   }
 }

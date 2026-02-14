@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { IBrandData, IBrandResponse, IBrandsReponse } from '../models/ibrand';
+import { IBrandResponse, IBrandsReponse } from '../models/ibrand';
 
 @Injectable({
   providedIn: 'root'
@@ -26,8 +26,14 @@ export class BrandsService {
     })
   }
 
-  deleteBrand(id: string): Observable<any> {
-    return this.httpClient.delete<any>(`http://localhost:3000/api/v1/brands/${id}`, {
+  updateBrand(id: string, formData: any): Observable<IBrandResponse> {
+    return this.httpClient.put<IBrandResponse>(`http://localhost:3000/api/v1/brands/${id}`, formData, {
+      withCredentials: true
+    })
+  }
+
+  deleteBrand(id: string): Observable<IBrandResponse> {
+    return this.httpClient.delete<IBrandResponse>(`http://localhost:3000/api/v1/brands/${id}`, {
       withCredentials: true
     })
   }
