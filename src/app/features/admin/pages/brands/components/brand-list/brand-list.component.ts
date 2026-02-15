@@ -11,6 +11,8 @@ import { MainTitleComponent } from "@shared/components";
 
 import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 interface IColumn {
   field: string;
@@ -20,7 +22,7 @@ interface IColumn {
 
 @Component({
   selector: 'app-brand-list',
-  imports: [MainTitleComponent, FileUploadModule, TableModule, FormsModule, RouterLink],
+  imports: [MainTitleComponent, FileUploadModule, TableModule, FormsModule, RouterLink, ConfirmDialogModule],
   templateUrl: './brand-list.component.html',
   styleUrl: './brand-list.component.scss'
 })
@@ -29,6 +31,7 @@ export class BrandListComponent implements OnInit {
   private readonly brandsService = inject(BrandsService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
+  private readonly confirmationService = inject(ConfirmationService);
 
   private searchSubject = new Subject<string>();
   brands: IBrandData[] = [];
@@ -37,6 +40,7 @@ export class BrandListComponent implements OnInit {
     { field: 'name', header: 'Name' }
   ];
 
+  loading: boolean = false;
   isPaginated: boolean = true;
   totalRecords = 0;
   currentPage = 1;
@@ -61,6 +65,7 @@ export class BrandListComponent implements OnInit {
   }
 
   getAllBrands(): void {
+    this.loading = true;
     const paginateObj = {
       currentPage: this.currentPage,
       limit: this.limit,
@@ -75,10 +80,12 @@ export class BrandListComponent implements OnInit {
           this.currentPage = res.paginationResult.currentPage;
           this.totalRecords = res.paginationResult.totalRecords;
         }
+        this.loading = false;
       },
       error: (err) => {
         console.log(err);
         this.toastr.error(err.error.message || 'Failed to fetch all brands');
+        this.loading = false;
       }
     })
   }
@@ -109,6 +116,17 @@ export class BrandListComponent implements OnInit {
   }
 
   onDelete(id: string): void {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this brand?',
+      header: 'Confirm Deletion',
+      icon: 'fa-solid fa-triangle-exclamation',
+      acceptLabel: 'confirm',
+      rejectLabel: 'cancel',
+      accept: () => this.deleteBrand(id)
+    })
+  }
+
+  deleteBrand(id: string): void {
     this.brandsService.deleteBrand(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.status === 'success') {

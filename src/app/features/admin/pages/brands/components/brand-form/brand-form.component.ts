@@ -7,12 +7,12 @@ import { ToastrService } from 'ngx-toastr';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 
-import { MainTitleComponent } from "@shared/components";
+import { MainTitleComponent, ImageUploadComponent } from "@shared/components";
 import { BrandsService } from '../../services/brands.service';
 
 @Component({
   selector: 'app-brand-form',
-  imports: [MainTitleComponent, ReactiveFormsModule, FileUploadModule, TableModule],
+  imports: [MainTitleComponent, ReactiveFormsModule, FileUploadModule, TableModule, ImageUploadComponent],
   templateUrl: './brand-form.component.html',
   styleUrl: './brand-form.component.scss'
 })
@@ -25,11 +25,6 @@ export class BrandFormComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   form!: FormGroup;
-  maxFileSize: number = 1000000; // 1MB
-  maxFileSizeInMB: string = (this.maxFileSize / 1_000_000).toFixed(1);
-  imageRatio: string = '1/1';
-  imageExample: string = '600px * 600px';
-  imagePreview: string | null = null;
   loading: boolean = false;
   isEditMode: boolean = false;
   brandId!: string;
@@ -77,7 +72,6 @@ export class BrandFormComponent implements OnInit {
 
       const formData = new FormData();
       formData.append('name', this.form.get('name')?.value);
-      // formData.append('image', this.form.get('image')?.value);
 
       const imageValue = this.form.get('image')?.value;
 
@@ -99,12 +93,10 @@ export class BrandFormComponent implements OnInit {
   }
 
   fillFormData(formData: any): void {
-    console.log('fillFormData', formData);
     this.form.patchValue({
       name: formData.name,
       image: null
     })
-    this.imagePreview = formData.image;
   }
 
   onCreate(formData: any): void {
@@ -113,7 +105,7 @@ export class BrandFormComponent implements OnInit {
         if (res.status === 'success') {
           this.toastr.success('Brand created successfully');
           this.form.reset();
-          this.imagePreview = null;
+          // this.imagePreview = null;
           this.router.navigate(['/brands']);
         }
         this.loading = false;
@@ -132,7 +124,6 @@ export class BrandFormComponent implements OnInit {
         if (res.status === 'success') {
           this.toastr.success('Brand updated successfully');
           this.form.reset();
-          this.imagePreview = null;
           this.router.navigate(['/brands']);
         }
         this.loading = false;
@@ -143,35 +134,5 @@ export class BrandFormComponent implements OnInit {
         this.loading = false;
       }
     })
-  }
-
-  onFileSelected(event: any): void {
-    const file = event.files[0];
-    if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      this.toastr.error('Accept only image');
-      return;
-    }
-
-    if (file.size > this.maxFileSize) {
-      this.maxFileSizeInMB = (this.maxFileSize / 1_000_000).toFixed(1);
-      this.toastr.error(`File size should be less than ${this.maxFileSizeInMB}MB`);
-      return;
-    }
-
-    this.form.get('image')?.setValue(file);
-
-    // create preview
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreview = reader.result as string;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  removeUploadedImage(): void {
-    this.imagePreview = null;
-    this.form.get('image')?.setValue(null);
   }
 }

@@ -1,0 +1,30 @@
+<div class="image-wrapper border-2 border-dashed border-gray-400 rounded-lg p-8 bg-gray-100">
+
+  @if (!imagePreview) {
+    <div class="flex flex-col gap-4 justify-center items-center text-gray-400">
+      <p-fileupload
+        mode="basic"
+        [chooseLabel]="label"
+        chooseIcon="fa-solid fa-arrow-up-from-bracket"
+        accept="image/*"
+        maxFileSize="100000000"
+        [customUpload]="true"
+        (onSelect)="onFileSelected($event)"
+      />
+      <p> Drag image here or click to select </p>
+      <p> Max file size: {{maxFileSizeInMB}} MB </p>
+      <p> Required image ratio: {{imageRatio}} </p>
+      <p> Example image size: {{imageExample}} </p>
+    </div>
+  }
+
+  @if (imagePreview) {
+    <div class="max-w-100 max-h-100 mx-auto relative">
+      <img [src]="imagePreview" class="w-full h-75 object-cover" alt="Brand preview" />
+      <button (click)="removeUploadedImage()" type="button" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-10 bg-red-600 text-white rounded-full cursor-pointer">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  }
+
+</div>
