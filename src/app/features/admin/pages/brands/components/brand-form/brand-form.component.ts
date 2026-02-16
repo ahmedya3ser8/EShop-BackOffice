@@ -28,6 +28,7 @@ export class BrandFormComponent implements OnInit {
   loading: boolean = false;
   isEditMode: boolean = false;
   brandId!: string;
+  imagePreview: string | null = null;
 
   ngOnInit(): void {
     this.initForm();
@@ -97,6 +98,7 @@ export class BrandFormComponent implements OnInit {
       name: formData.name,
       image: null
     })
+    this.imagePreview = formData.image;
   }
 
   onCreate(formData: any): void {

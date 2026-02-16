@@ -1,0 +1,83 @@
+<p-table
+  [value]="data"
+  [paginator]="true"
+  [rows]="rows"
+  [totalRecords]="totalRecords"
+  [lazy]="lazy"
+  [rowsPerPageOptions]="[5, 10, 20]"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  [tableStyle]="{ 'min-width': '60rem' }"
+  (onPage)="onPageChange.emit($event)"
+  (onLazyLoad)="onSort.emit($event)"
+>
+
+  <ng-template #header>
+    <tr>
+      @for (col of columns; track col) {
+        <th
+          [pSortableColumn]="col.isSort ? col.field : undefined"
+          class="transition duration-300 hover:bg-gray-100!"
+          style="width: 20%;"
+        >
+          {{col.header}}
+          @if (col.isSort) {
+            <p-sortIcon [field]="col.field" />
+          }
+        </th>
+      }
+      <th> actions </th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-rowData>
+    <tr class="transition duration-300 hover:bg-gray-50!">
+      @for (col of columns; track col) {
+        <td>
+          @if (col.isImage) {
+            <img [src]="rowData[col.field]" class="size-16" [alt]="rowData['name']">
+          } @else {
+            {{ rowData[col.field] }}
+          }
+        </td>
+      }
+      <td class="space-x-3">
+        @if (allowView) {
+          <button (click)="onView.emit(rowData._id)" class="transition duration-300 hover:text-[#3b82f6] cursor-pointer">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        }
+        @if (allowEdit) {
+          <button (click)="onEdit.emit(rowData._id)" class="transition duration-300 hover:text-[#8b5cf6] cursor-pointer">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+        }
+        @if (allowDelete) {
+          <button (click)="onDelete.emit(rowData._id)" class="transition duration-300 hover:text-[#ef4444] cursor-pointer">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        }
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="columns.length + 1">
+        @if (loading) {
+          <div class="text-center p-6 flex flex-col gap-4">
+            <i class="fa-solid fa-spinner text-2xl mx-auto animate-spin text-[#D2A02D]"></i>
+            <h3 class="text-lg"> loading... </h3>
+          </div>
+        } @else {
+          <div class="text-center p-6 flex flex-col gap-4">
+            <i class="fa-regular fa-face-frown text-2xl mx-auto text-gray-400"></i>
+            <h3 class="text-lg"> No Data Found </h3>
+            <p class="text-gray-500"> There are currently no data available. </p>
+          </div>
+        }
+      </td>
+    </tr>
+  </ng-template>
+
+</p-table>

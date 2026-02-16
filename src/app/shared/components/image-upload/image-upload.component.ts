@@ -1,5 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+
 import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
 
@@ -16,8 +17,8 @@ export class ImageUploadComponent {
   @Input() imageRatio: string = '1/1';
   @Input() imageExample: string = '600px * 600px';
   @Input() label: string = 'Upload Image';
+  @Input() imagePreview: string | null = null;
 
-  imagePreview: string | null = null;
   maxFileSizeInMB: string = (this.maxFileSize / 1_000_000).toFixed(1);
 
   @Output() imageChange = new EventEmitter<File | null>();

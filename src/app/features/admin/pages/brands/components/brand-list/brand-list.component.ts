@@ -7,22 +7,17 @@ import { ToastrService } from 'ngx-toastr';
 
 import { BrandsService } from '../../services/brands.service';
 import { IBrandData } from '../../models/ibrand';
-import { MainTitleComponent } from "@shared/components";
+import { MainTitleComponent, DataViewComponent } from "@shared/components";
 
 import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-
-interface IColumn {
-  field: string;
-  header: string;
-  isImage?: boolean;
-}
+import { ITableCol } from '@core/models/itabel';
 
 @Component({
   selector: 'app-brand-list',
-  imports: [MainTitleComponent, FileUploadModule, TableModule, FormsModule, RouterLink, ConfirmDialogModule],
+  imports: [MainTitleComponent, FileUploadModule, TableModule, FormsModule, RouterLink, ConfirmDialogModule, DataViewComponent],
   templateUrl: './brand-list.component.html',
   styleUrl: './brand-list.component.scss'
 })
@@ -35,16 +30,14 @@ export class BrandListComponent implements OnInit {
 
   private searchSubject = new Subject<string>();
   brands: IBrandData[] = [];
-  columns: IColumn[] = [
+  columns: ITableCol[] = [
     { field: 'image', header: 'image', isImage: true },
-    { field: 'name', header: 'Name' }
+    { field: 'name', header: 'Name', isSort: true }
   ];
-
   loading: boolean = false;
-  isPaginated: boolean = true;
   totalRecords = 0;
   currentPage = 1;
-  limit = 5;
+  rows = 5;
   sortField = '';
   keyword = '';
   fields: string = 'name,image';
@@ -68,13 +61,14 @@ export class BrandListComponent implements OnInit {
     this.loading = true;
     const paginateObj = {
       currentPage: this.currentPage,
-      limit: this.limit,
+      limit: this.rows,
       sort: this.sortField,
       keyword: this.keyword,
       fields: this.fields
     }
     this.brandsService.getAllBrands(paginateObj).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
+        console.log(res);
         if (res.status === 'success') {
           this.brands = res.data;
           this.currentPage = res.paginationResult.currentPage;
@@ -91,7 +85,7 @@ export class BrandListComponent implements OnInit {
   }
 
   onPageChange(value: { first: number; rows: number }): void {
-    this.limit = value.rows;
+    this.rows = value.rows;
     this.currentPage = Math.floor(value.first / value.rows) + 1;
     this.getAllBrands();
   }
