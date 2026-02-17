@@ -15,9 +15,7 @@ export class BrandsService {
   }
 
   getBrand(id: string): Observable<IBrandResponse> {
-    return this.httpClient.get<IBrandResponse>(`http://localhost:3000/api/v1/brands/${id}`, {
-      withCredentials: true
-    })
+    return this.httpClient.get<IBrandResponse>(`http://localhost:3000/api/v1/brands/${id}`)
   }
 
   createNewBrand(formData: any): Observable<IBrandResponse> {

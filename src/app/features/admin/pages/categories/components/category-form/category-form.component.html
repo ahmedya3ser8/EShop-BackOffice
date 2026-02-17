@@ -1,0 +1,33 @@
+<app-main-title [title]="isEditMode ? 'Edit Category' : 'Add Category'" />
+
+<form [formGroup]="form" (ngSubmit)="submitForm()" class="flex flex-col gap-6">
+
+  <div class="form_field">
+    <div class="float_field">
+      <input type="text" formControlName="name" class="input_field" id="name" placeholder=" " />
+      <label for="name" class="label_field"> name </label>
+    </div>
+    @if (form.get('name')?.getError('required') && form.get('name')?.touched) {
+      <small class="input_error"> name is required </small>
+    } @else if (form.get('name')?.getError('minlength') || form.get('name')?.getError('maxlength')) {
+      <small class="input_error"> Category name must be between 3 and 32 characters </small>
+    }
+  </div>
+
+  <app-image-upload
+    [maxFileSize]="1000000"
+    [imageExample]="'600px * 600px'"
+    [imageRatio]="'1/1'"
+    [label]="'choose new category'"
+    [imagePreview]="imagePreview"
+    (imageChange)="form.get('image')?.setValue($event)"
+  />
+
+  <button class="bg-gray-600 text-white rounded-lg p-3 transition duration-300 hover:bg-gray-700 cursor-pointer w-40">
+    {{ isEditMode ? 'edit category' : 'add category' }}
+    @if (loading) {
+      <i class="fa-solid fa-spinner animate-spin"></i>
+    }
+  </button>
+
+</form>

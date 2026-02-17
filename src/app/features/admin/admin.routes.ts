@@ -1,7 +1,6 @@
 import { Routes } from "@angular/router";
 
 import {
-  CategoriesComponent,
   DashboardComponent,
   OrdersComponent,
   ProductsComponent,
@@ -27,7 +26,7 @@ export const adminRoutes: Routes = [
   },
   {
     path: 'categories',
-    component: CategoriesComponent,
+    loadChildren: () => import('./pages/categories/categories.routes').then(r => r.categoryRoutes),
     title: 'EShop - Categories'
   },
   {

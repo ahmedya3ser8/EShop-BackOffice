@@ -1,33 +1,33 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { Router, RouterLink } from "@angular/router";
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
-import { BrandsService } from '../../services/brands.service';
-import { IBrandData } from '../../models/ibrand';
-import { MainTitleComponent, DataViewComponent } from "@shared/components";
-
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
+import { CategoriesService } from '../../services/categories.service';
+import { ICategoryData } from '../../models/icategory';
 import { ITableCol } from '@features/admin/models/itabel';
+import { DataViewComponent, MainTitleComponent } from '@shared/components';
 
 @Component({
-  selector: 'app-brand-list',
+  selector: 'app-category-list',
   imports: [MainTitleComponent, FormsModule, RouterLink, ConfirmDialogModule, DataViewComponent],
-  templateUrl: './brand-list.component.html',
-  styleUrl: './brand-list.component.scss'
+  templateUrl: './category-list.component.html',
+  styleUrl: './category-list.component.scss'
 })
-export class BrandListComponent implements OnInit {
+export class CategoryListComponent implements OnInit {
   private readonly toastr = inject(ToastrService);
-  private readonly brandsService = inject(BrandsService);
+  private readonly categoriesService = inject(CategoriesService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
 
   private searchSubject = new Subject<string>();
-  brands: IBrandData[] = [];
+  categories: ICategoryData[] = [];
   columns: ITableCol[] = [
     { field: 'image', header: 'image', isImage: true },
     { field: 'name', header: 'Name', isSort: true }
@@ -41,7 +41,7 @@ export class BrandListComponent implements OnInit {
   fields: string = 'name,image';
 
   ngOnInit(): void {
-    this.getAllBrands();
+    this.getAllCategories();
     this.searchSubject.pipe(
       debounceTime(400),
       distinctUntilChanged(),
@@ -50,12 +50,12 @@ export class BrandListComponent implements OnInit {
       next: (value) => {
         this.keyword = value;
         this.currentPage = 1;
-        this.getAllBrands();
+        this.getAllCategories();
       }
     })
   }
 
-  getAllBrands(): void {
+  getAllCategories(): void {
     this.loading = true;
     const paginateObj = {
       currentPage: this.currentPage,
@@ -64,11 +64,11 @@ export class BrandListComponent implements OnInit {
       keyword: this.keyword,
       fields: this.fields
     }
-    this.brandsService.getAllBrands(paginateObj).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.categoriesService.getAllCategories(paginateObj).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         console.log(res);
         if (res.status === 'success') {
-          this.brands = res.data;
+          this.categories = res.data;
           this.currentPage = res.paginationResult.currentPage;
           this.totalRecords = res.paginationResult.totalRecords;
         }
@@ -76,7 +76,7 @@ export class BrandListComponent implements OnInit {
       },
       error: (err) => {
         console.log(err);
-        this.toastr.error(err.error.message || 'Failed to fetch all brands');
+        this.toastr.error(err.error.message || 'Failed to fetch all categories');
         this.loading = false;
       }
     })
@@ -85,7 +85,7 @@ export class BrandListComponent implements OnInit {
   onPageChange(value: { first: number; rows: number }): void {
     this.rows = value.rows;
     this.currentPage = Math.floor(value.first / value.rows) + 1;
-    this.getAllBrands();
+    this.getAllCategories();
   }
 
   onSearch(): void {
@@ -95,40 +95,40 @@ export class BrandListComponent implements OnInit {
   onSort(event: any): void {
     if (event.sortField === 'name') {
       this.sortField = event.sortOrder === 1 ? event.sortField : `-${event.sortField}`;
-      this.getAllBrands();
+      this.getAllCategories();
     }
   }
 
   onView(id: string): void {
-    this.router.navigate(['/brands/view', id])
+    this.router.navigate(['/categories/view', id])
   }
 
   onEdit(id: string): void {
-    this.router.navigate(['/brands/edit', id])
+    this.router.navigate(['/categories/edit', id])
   }
 
   onDelete(id: string): void {
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this brand?',
+      message: 'Are you sure you want to delete this category?',
       header: 'Confirm Deletion',
       icon: 'fa-solid fa-triangle-exclamation',
       acceptLabel: 'confirm',
       rejectLabel: 'cancel',
-      accept: () => this.deleteBrand(id)
+      accept: () => this.deleteCategory(id)
     })
   }
 
-  deleteBrand(id: string): void {
-    this.brandsService.deleteBrand(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+  deleteCategory(id: string): void {
+    this.categoriesService.deleteCategory(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         if (res.status === 'success') {
-          this.toastr.success('brand deleted successfully');
-          this.getAllBrands();
+          this.toastr.success('category deleted successfully');
+          this.getAllCategories();
         }
       },
       error: (err) => {
         console.log(err);
-        this.toastr.error(err.error.message || 'Failed to delete brand');
+        this.toastr.error(err.error.message || 'Failed to delete category');
       }
     })
   }

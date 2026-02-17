@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { TableModule } from 'primeng/table';
-import { ITableCol } from '@core/models/itabel';
+import { ITableCol } from '@features/admin';
 
 @Component({
   selector: 'app-data-view',
@@ -11,9 +11,9 @@ import { ITableCol } from '@core/models/itabel';
   styleUrl: './data-view.component.scss'
 })
 export class DataViewComponent {
-  @Input() data: any[] = [];
+  @Input({ required: true }) data: any[] = [];
+  @Input({ required: true }) columns: ITableCol[] = [];
   @Input() rows: number = 5;
-  @Input() columns!: ITableCol[];
   @Input() totalRecords: number = 0;
   @Input() lazy: boolean = true;
   @Input() loading: boolean = false;
