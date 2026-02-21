@@ -1,0 +1,30 @@
+<app-main-title [title]="'SubCategory Lists'" />
+
+<div class="flex justify-between items-center mb-10">
+
+  <div class="float_field w-1/2">
+    <input type="search" (input)="onSearch()" [(ngModel)]="keyword" class="input_field h-12" id="search" placeholder=" " />
+    <label for="search" class="label_field"> search by name </label>
+  </div>
+
+  <button routerLink="/subcategories/add" type="button" class="bg-gray-600 text-white rounded-lg p-3 cursor-pointer w-50 transition duration-300 hover:bg-gray-700">
+    add new subCategory
+  </button>
+
+</div>
+
+<app-data-view
+  [data]="subCategories"
+  [columns]="columns"
+  [lazy]="true"
+  [loading]="loading"
+  [rows]="rows"
+  [totalRecords]="totalRecords"
+  (onPageChange)="onPageChange($event)"
+  (onSort)="onSort($event)"
+  (onDelete)="onDelete($event)"
+  (onEdit)="onEdit($event)"
+  (onView)="onView($event)"
+/>
+
+<p-confirmDialog />

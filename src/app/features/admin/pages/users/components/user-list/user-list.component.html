@@ -1,0 +1,22 @@
+<app-main-title [title]="'User Lists'" />
+
+<button routerLink="/users/add" type="button" class="bg-gray-600 text-white rounded-lg p-3 block ml-auto cursor-pointer w-40 transition duration-300 hover:bg-gray-700 mb-10">
+  add new user
+</button>
+
+<app-data-view
+  [data]="users"
+  [columns]="columns"
+  [lazy]="true"
+  [loading]="loading"
+  [rows]="rows"
+  [totalRecords]="totalRecords"
+  (onPageChange)="onPageChange($event)"
+  (onSort)="onSort($event)"
+  (onDelete)="onDelete($event)"
+  (onEdit)="onEdit($event)"
+  (onView)="onView($event)"
+  (onStatus)="onStatus($event)"
+/>
+
+<p-confirmDialog />

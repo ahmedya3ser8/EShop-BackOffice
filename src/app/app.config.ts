@@ -9,6 +9,7 @@ import { provideToastr } from 'ngx-toastr';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeuix/themes/aura';
 import { ConfirmationService } from 'primeng/api';
+import { BASE_URL } from '@shared/tokens/api-url.token';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,6 +30,10 @@ export const appConfig: ApplicationConfig = {
         }
       }
     }),
-    ConfirmationService
+    ConfirmationService,
+    {
+      provide: BASE_URL,
+      useValue: 'http://localhost:3000/api/v1'
+    }
   ]
 };

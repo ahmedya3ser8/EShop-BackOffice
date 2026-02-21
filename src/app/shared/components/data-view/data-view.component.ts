@@ -27,4 +27,9 @@ export class DataViewComponent {
   @Output() onView = new EventEmitter<any>();
   @Output() onEdit = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
+  @Output() onStatus = new EventEmitter<{ id: string; active: boolean }>();
+
+  getValue(row: any, field: string) {
+    return field.split('.').reduce((obj, key) => obj?.[key], row);
+  }
 }

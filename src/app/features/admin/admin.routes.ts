@@ -3,9 +3,7 @@ import { Routes } from "@angular/router";
 import {
   DashboardComponent,
   OrdersComponent,
-  ProductsComponent,
-  SubCategoriesComponent,
-  UsersComponent
+  ProductsComponent
 } from '@features/admin';
 
 export const adminRoutes: Routes = [
@@ -31,7 +29,7 @@ export const adminRoutes: Routes = [
   },
   {
     path: 'users',
-    component: UsersComponent,
+    loadChildren: () => import('./pages/users/users.routes').then(r => r.userRoutes),
     title: 'EShop - Users'
   },
   {
@@ -40,8 +38,8 @@ export const adminRoutes: Routes = [
     title: 'EShop - Orders'
   },
   {
-    path: 'sub-categories',
-    component: SubCategoriesComponent,
+    path: 'subcategories',
+    loadChildren: () => import('./pages/sub-categories/subCategories.routes').then(r => r.subCategoryRoutes),
     title: 'EShop - SubCategories'
   },
 ]

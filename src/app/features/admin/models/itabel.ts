@@ -3,4 +3,5 @@ export interface ITableCol {
   header: string;
   isImage?: boolean;
   isSort?: boolean;
+  isStatus?: boolean;
 }

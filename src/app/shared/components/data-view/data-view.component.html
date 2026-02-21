@@ -18,7 +18,6 @@
         <th
           [pSortableColumn]="col.isSort ? col.field : undefined"
           class="transition duration-300 hover:bg-gray-100!"
-          style="width: 20%;"
         >
           {{col.header}}
           @if (col.isSort) {
@@ -35,9 +34,13 @@
       @for (col of columns; track col) {
         <td>
           @if (col.isImage) {
-            <img [src]="rowData[col.field]" class="size-16" [alt]="rowData['name']">
+            <img [src]="getValue(rowData, col.field)" class="size-16" [alt]="rowData['name']">
+          } @else if (col.isStatus) {
+            <span (click)="onStatus.emit({ id: rowData._id, active: !rowData.active })" [class]="getValue(rowData, col.field) === true ? 'bg-[#22c55e]' : 'bg-red-500'" class="size-10 text-white rounded-lg flex justify-center items-center cursor-pointer">
+              <i [class]="getValue(rowData, col.field) === true ? 'fa-circle-check' : 'fa-circle-xmark'" class="fa-regular"></i>
+            </span>
           } @else {
-            {{ rowData[col.field] }}
+            {{ getValue(rowData, col.field) }}
           }
         </td>
       }
