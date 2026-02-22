@@ -1,13 +1,11 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
-import { UsersService } from '../../services/users.service';
 import { ITableCol } from '@features/admin/models/itabel';
 import { DataViewComponent, MainTitleComponent } from "@shared/components";
+import { UsersService } from '../../services/users.service';
 
 import { ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -25,14 +23,13 @@ export class UserListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
 
-  private searchSubject = new Subject<string>();
   users: any[] = [];
   columns: ITableCol[] = [
-    { field: 'fullName', header: 'fullName', isSort: true },
-    { field: 'email', header: 'email', isSort: true },
-    { field: 'phoneNumber', header: 'phoneNumber' },
-    { field: 'role', header: 'role' },
-    { field: 'active', header: 'active', isStatus: true },
+    { field: 'fullName', header: 'FullName', isSort: true },
+    { field: 'email', header: 'Email', isSort: true },
+    { field: 'phoneNumber', header: 'Phone Number' },
+    { field: 'role', header: 'Role' },
+    { field: 'active', header: 'Status', isStatus: true },
   ];
   loading: boolean = false;
   totalRecords = 0;
@@ -130,7 +127,6 @@ export class UserListComponent implements OnInit {
   changeUserStatus(id: string, active: boolean): void {
     this.usersService.changeUserStatus(id, active).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
-        console.log(res);
         if (res.data) {
           const message = active
             ? 'User has been activated successfully.'

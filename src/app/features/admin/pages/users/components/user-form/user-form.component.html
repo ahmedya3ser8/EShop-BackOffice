@@ -1,1 +1,82 @@
-<p>user-form works!</p>
+<app-main-title [title]="isEditMode ? 'Edit User' : 'Add User'" />
+
+<form [formGroup]="form" (ngSubmit)="submitForm()" class="flex flex-col gap-6">
+
+  <div class="form_field">
+    <div class="float_field">
+      <input type="text" formControlName="fullName" class="input_field" id="fullName" placeholder=" " />
+      <label for="fullName" class="label_field"> fullName </label>
+    </div>
+    @if (form.get('fullName')?.getError('required') && form.get('fullName')?.touched) {
+      <small class="input_error"> fullName is required </small>
+    } @else if (form.get('fullName')?.getError('minlength') || form.get('fullName')?.getError('maxlength')) {
+      <small class="input_error"> fullName must be between 3 and 32 characters </small>
+    }
+  </div>
+
+  <div class="form_field">
+    <div class="float_field">
+      <input type="email" formControlName="email" class="input_field" id="email" placeholder=" " />
+      <label for="email" class="label_field"> Email </label>
+    </div>
+    @if (form.get('email')?.getError('required') && form.get('email')?.touched) {
+      <small class="input_error"> email is required </small>
+    } @else if (form.get('email')?.getError('email')) {
+      <small class="input_error"> Invalid email address </small>
+    }
+  </div>
+
+  <div class="form_field">
+    <div class="float_field">
+      <input type="tel" formControlName="phoneNumber" class="input_field" id="phoneNumber" placeholder=" " />
+      <label for="phoneNumber" class="label_field"> PhoneNumber </label>
+    </div>
+    @if (form.get('phoneNumber')?.getError('required') && form.get('phoneNumber')?.touched) {
+      <small class="input_error"> phoneNumber is required </small>
+    }
+  </div>
+
+  <div class="form_field">
+    <div class="float_field">
+      <input type="password" formControlName="password" class="input_field" id="password" placeholder=" " />
+      <label for="password" class="label_field"> Password </label>
+    </div>
+    @if (form.get('password')?.getError('required') && form.get('password')?.touched) {
+      <small class="input_error"> password is required </small>
+    } @else if (form.get('password')?.getError('minlength')) {
+      <small class="input_error"> password must be at least 6 characters </small>
+    }
+  </div>
+
+  @if (!isEditMode) {
+    <div class="form_field">
+      <div class="float_field">
+        <input type="password" formControlName="confirmPassword" class="input_field" id="confirmPassword" placeholder=" " />
+        <label for="confirmPassword" class="label_field"> Confirm Password </label>
+      </div>
+      @if (form.get('confirmPassword')?.getError('required') && form.get('confirmPassword')?.touched) {
+        <small class="input_error"> confirmPassword is required </small>
+      } @else if (form.getError('mismatch') && form.get('confirmPassword')?.touched) {
+        <small class="input_error"> password and confirmPassword not match </small>
+      }
+    </div>
+  }
+
+  <div class="form_field">
+    <div class="float_field">
+      <input type="text" formControlName="role" class="input_field" id="role" placeholder=" " />
+      <label for="role" class="label_field"> role </label>
+    </div>
+    @if (form.get('role')?.getError('required') && form.get('role')?.touched) {
+      <small class="input_error"> role is required </small>
+    }
+  </div>
+
+  <button class="bg-gray-600 text-white rounded-lg p-3 transition duration-300 hover:bg-gray-700 cursor-pointer w-40">
+    {{ isEditMode ? 'edit user' : 'add user' }}
+    @if (loading) {
+      <i class="fa-solid fa-spinner animate-spin"></i>
+    }
+  </button>
+
+</form>

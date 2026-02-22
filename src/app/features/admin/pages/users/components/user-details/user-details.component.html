@@ -1,1 +1,33 @@
-<p>user-details works!</p>
+<app-main-title [title]="'User Details'" />
+
+<button routerLink="/users" class="bg-gray-100 text-gray-700 p-3 rounded-lg cursor-pointer mb-6">
+  <i class="fa-solid fa-arrow-left"></i>
+  Back to List
+</button>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  <div class="card p-6 bg-gray-50 rounded-lg flex flex-col gap-4">
+    <h2 class="text-2xl text-gray-500"> Basic Information </h2>
+    <div class="flex justify-between items-center text-gray-500">
+      <h3 class="text-xl"> Full Name : </h3>
+      <h4 class="text-lg"> {{userData.fullName}} </h4>
+    </div>
+    <div class="flex justify-between items-center text-gray-500">
+      <h3 class="text-xl"> Email : </h3>
+      <h4 class="text-lg"> {{userData.email}} </h4>
+    </div>
+    <div class="flex justify-between items-center text-gray-500">
+      <h3 class="text-xl"> PhoneNumber : </h3>
+      <h4 class="text-lg"> {{userData.phoneNumber}} </h4>
+    </div>
+    <div class="flex justify-between items-center text-gray-500">
+      <h3 class="text-xl"> Role : </h3>
+      <h4 class="text-lg"> {{userData.role}} </h4>
+    </div>
+    <div class="flex justify-between items-center text-gray-500">
+      <h3 class="text-xl"> Status : </h3>
+      <h4 class="text-lg"> {{userData.active ? 'Active' : 'Inactive' }} </h4>
+    </div>
+  </div>
+</div>
+
